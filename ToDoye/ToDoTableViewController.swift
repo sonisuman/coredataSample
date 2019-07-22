@@ -9,13 +9,16 @@
 import UIKit
 
 class ToDoTableViewController: UITableViewController {
-
+let userDefault = UserDefaults.standard
   var itemArr = ["Buy Eggs", "Buy Vegitable","Buy milk"]
   
   
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    if let items = userDefault.value(forKey: "TodoListItems") as? [String] {
+      itemArr = items
+    }
   }
   
  //Mark: Tableview Datasource Delegates
@@ -52,12 +55,13 @@ class ToDoTableViewController: UITableViewController {
     let action = UIAlertAction(title: "Add item", style: .default) { (action) in
       print("Success!!!")
      self.itemArr.append(textField.text!)
+      self.userDefault.set(self.itemArr, forKey: "TodoListItems")
+      
       self.tableView.reloadData()
     }
     alert.addTextField(configurationHandler: { (alertTextField) in
       alertTextField.placeholder = "Create new item"
       textField = alertTextField
-      print(alertTextField.text)
     })
     
     alert.addAction(action)
