@@ -9,29 +9,13 @@
 import UIKit
 
 class ToDoTableViewController: UITableViewController {
-  let userDefault = UserDefaults.standard
+  //let userDefault = UserDefaults.standard
   var itemArr = [Item]()
+  let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Item.plist")
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    let item = Item()
-    item.title = "Buy Eggs"
-    itemArr.append(item)
-    
-    let item1 = Item()
-    item1.title = "Buy Vegitable"
-    itemArr.append(item1)
-    
-    let item2 = Item()
-    item2.title = "Buy milk"
-    itemArr.append(item2)
-    
-    let item3 = Item()
-    item3.title = "Buy Bread"
-    itemArr.append(item3)
-    if let items = userDefault.array(forKey: "TodoListItems") as? [Item] {
-      itemArr = items
-    }
+    loadItems()
   }
   
   //Mark: Tableview Datasource Delegates
@@ -53,7 +37,7 @@ class ToDoTableViewController: UITableViewController {
     print(indexPath.row)
     print(itemArr[indexPath.row])
     itemArr[indexPath.row].done = !itemArr[indexPath.row].done
-    tableView.reloadData()
+    saveData()
     tableView.deselectRow(at: indexPath, animated: true)
   }
   
@@ -67,9 +51,7 @@ class ToDoTableViewController: UITableViewController {
       let item = Item()
       item.title = textField.text!
       self.itemArr.append(item)
-      self.userDefault.set(self.itemArr, forKey: "TodoListItems")
-      
-      self.tableView.reloadData()
+      self.saveData()
     }
     alert.addTextField(configurationHandler: { (alertTextField) in
       alertTextField.placeholder = "Create new item"
@@ -81,6 +63,29 @@ class ToDoTableViewController: UITableViewController {
   }
   
   
+  //Mark: Model menupulation method
+  
+  func saveData() {
+    let encoder = PropertyListEncoder()
+    do {
+      let items = try encoder.encode(itemArr)
+      try items.write(to: filePath!)
+    }catch {
+      print(error.localizedDescription)
+    }
+    self.tableView.reloadData()
+  }
+  
+  func loadItems() {
+    if let data = try? Data(contentsOf: filePath!) {
+      let decoder = PropertyListDecoder()
+      do {
+       itemArr =  try decoder.decode([Item].self, from: data)
+      } catch {
+        print(error.localizedDescription)
+      }
+    }
+  }
 }
 
 
