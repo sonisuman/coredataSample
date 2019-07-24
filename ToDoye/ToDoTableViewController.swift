@@ -29,6 +29,9 @@ class ToDoTableViewController: UITableViewController {
     let item3 = Item()
     item3.title = "Buy Bread"
     itemArr.append(item3)
+    if let items = userDefault.array(forKey: "TodoListItems") as? [Item] {
+      itemArr = items
+    }
   }
   
   //Mark: Tableview Datasource Delegates
