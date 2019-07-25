@@ -7,16 +7,25 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoTableViewController: UITableViewController {
-  //let userDefault = UserDefaults.standard
+  
+  
+  @IBOutlet var searchBar: UISearchBar!
   var itemArr = [Item]()
-  let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Item.plist")
+  
+  let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    let filePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    print(filePath)
+    searchBar.delegate = self
+    searchBar.resignFirstResponder()
     loadItems()
   }
+  
   
   //Mark: Tableview Datasource Delegates
   
@@ -36,6 +45,9 @@ class ToDoTableViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     print(indexPath.row)
     print(itemArr[indexPath.row])
+    //     context.delete(itemArr[indexPath.row])
+    //     itemArr.remove(at: indexPath.row)
+    // itemArr[indexPath.row].setValue("Completed", forKey: "title")
     itemArr[indexPath.row].done = !itemArr[indexPath.row].done
     saveData()
     tableView.deselectRow(at: indexPath, animated: true)
@@ -48,8 +60,9 @@ class ToDoTableViewController: UITableViewController {
     let alert = UIAlertController(title: "Add new todoey items", message: "", preferredStyle: .alert)
     let action = UIAlertAction(title: "Add item", style: .default) { (action) in
       print("Success!!!")
-      let item = Item()
+      let item = Item(context: self.context)
       item.title = textField.text!
+      item.done = false
       self.itemArr.append(item)
       self.saveData()
     }
@@ -66,27 +79,42 @@ class ToDoTableViewController: UITableViewController {
   //Mark: Model menupulation method
   
   func saveData() {
-    let encoder = PropertyListEncoder()
     do {
-      let items = try encoder.encode(itemArr)
-      try items.write(to: filePath!)
+      try context.save()
     }catch {
-      print(error.localizedDescription)
+      print("Error save data\(error.localizedDescription)")
     }
     self.tableView.reloadData()
   }
   
   func loadItems() {
-    if let data = try? Data(contentsOf: filePath!) {
-      let decoder = PropertyListDecoder()
-      do {
-       itemArr =  try decoder.decode([Item].self, from: data)
-      } catch {
-        print(error.localizedDescription)
-      }
+    let request: NSFetchRequest<Item> = Item.fetchRequest()
+    do {
+      itemArr = try context.fetch(request)
+    } catch {
+      print("error occured--\(error.localizedDescription)")
     }
   }
 }
+extension ToDoTableViewController : UISearchBarDelegate {
+  
+  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    let request: NSFetchRequest<Item> = Item.fetchRequest()
+    let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+    request.predicate = predicate
+    
+    let sortDiscripter = NSSortDescriptor(key: "title", ascending: true)
+    request.sortDescriptors = [sortDiscripter]
+    do {
+      itemArr =  try context.fetch(request)
+    } catch {
+      print(error.localizedDescription)
+    }
+    tableView.reloadData()
+  }
+}
+
+
 
 
 
