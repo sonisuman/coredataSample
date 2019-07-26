@@ -87,8 +87,7 @@ class ToDoTableViewController: UITableViewController {
     self.tableView.reloadData()
   }
   
-  func loadItems() {
-    let request: NSFetchRequest<Item> = Item.fetchRequest()
+  func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
     do {
       itemArr = try context.fetch(request)
     } catch {
@@ -97,21 +96,19 @@ class ToDoTableViewController: UITableViewController {
   }
 }
 extension ToDoTableViewController : UISearchBarDelegate {
-  
-  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     let request: NSFetchRequest<Item> = Item.fetchRequest()
-    let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-    request.predicate = predicate
-    
-    let sortDiscripter = NSSortDescriptor(key: "title", ascending: true)
-    request.sortDescriptors = [sortDiscripter]
-    do {
-      itemArr =  try context.fetch(request)
-    } catch {
-      print(error.localizedDescription)
-    }
-    tableView.reloadData()
+    request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+    request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+    loadItems(with: request)
   }
+  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+    loadItems()
+    DispatchQueue.main.async {
+      searchBar.resignFirstResponder()
+    }
+  }
+  
 }
 
 

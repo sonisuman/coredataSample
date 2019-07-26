@@ -15,6 +15,7 @@
 		E43677A422E1BF0A00CB7118 /* ToDoyeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43677A322E1BF0A00CB7118 /* ToDoyeTests.swift */; };
 		E43677AF22E1BF0A00CB7118 /* ToDoyeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43677AE22E1BF0A00CB7118 /* ToDoyeUITests.swift */; };
 		E49D547A22E97A980046B35A /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E49D547822E97A980046B35A /* DataModel.xcdatamodeld */; };
+		E4C8F30B22EB22A900FB7DD9 /* CatagoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C8F30A22EB22A900FB7DD9 /* CatagoryTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		E43677AE22E1BF0A00CB7118 /* ToDoyeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoyeUITests.swift; sourceTree = "<group>"; };
 		E43677B022E1BF0A00CB7118 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E49D547922E97A980046B35A /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		E4C8F30A22EB22A900FB7DD9 /* CatagoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatagoryTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				E436779022E1BEDD00CB7118 /* ToDoTableViewController.swift */,
+				E4C8F30A22EB22A900FB7DD9 /* CatagoryTableViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				E436779122E1BEDD00CB7118 /* ToDoTableViewController.swift in Sources */,
 				E49D547A22E97A980046B35A /* DataModel.xcdatamodeld in Sources */,
 				E436778F22E1BEDD00CB7118 /* AppDelegate.swift in Sources */,
+				E4C8F30B22EB22A900FB7DD9 /* CatagoryTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
