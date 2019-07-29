@@ -32,10 +32,22 @@ class CatagoryTableViewController: UITableViewController {
     return itemArr.count
   }
   
+  //Mark: Table view delegate
+  
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    performSegue(withIdentifier: "addToItems", sender: self)
+  }
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    let destinationVc = segue.destination as! ToDoTableViewController
+    if let indexPath = tableView.indexPathForSelectedRow  {
+      destinationVc.selectedCategory = itemArr[indexPath.row]
+    }
+  }
+  
   @IBAction func addButtonClicked(_ sender: UIBarButtonItem) {
     var textField = UITextField()
-    let alert = UIAlertController(title: "Add new todoey items", message: "", preferredStyle: .alert)
-    let action = UIAlertAction(title: "Add item", style: .default) { (action) in
+    let alert = UIAlertController(title: "Add new todoey category", message: "", preferredStyle: .alert)
+    let action = UIAlertAction(title: "Add", style: .default) { (action) in
       print("Success!!!")
       let item = Catagory(context: self.context)
       item.name = textField.text!
@@ -43,7 +55,7 @@ class CatagoryTableViewController: UITableViewController {
       self.saveData()
     }
     alert.addTextField(configurationHandler: { (alertTextField) in
-      alertTextField.placeholder = "Create new item"
+      alertTextField.placeholder = "Create new category"
       textField = alertTextField
     })
     

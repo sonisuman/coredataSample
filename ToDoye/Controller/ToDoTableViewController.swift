@@ -14,7 +14,11 @@ class ToDoTableViewController: UITableViewController {
   
   @IBOutlet var searchBar: UISearchBar!
   var itemArr = [Item]()
-  
+  var selectedCategory : Catagory? {
+    didSet {
+      loadItems()
+    }
+  }
   let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   
   override func viewDidLoad() {
@@ -23,7 +27,6 @@ class ToDoTableViewController: UITableViewController {
     print(filePath)
     searchBar.delegate = self
     searchBar.resignFirstResponder()
-    loadItems()
   }
   
   
@@ -63,6 +66,7 @@ class ToDoTableViewController: UITableViewController {
       let item = Item(context: self.context)
       item.title = textField.text!
       item.done = false
+      item.parentItem = self.selectedCategory
       self.itemArr.append(item)
       self.saveData()
     }
@@ -87,7 +91,15 @@ class ToDoTableViewController: UITableViewController {
     self.tableView.reloadData()
   }
   
-  func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+  func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(),predicate: NSPredicate? = nil) {
+    let tempPredicate = NSPredicate(format: "parentItem.name MATCHES %@", selectedCategory!.name!)
+    if  let categoryPredicate = predicate {
+      request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate,tempPredicate])
+    }
+    else {
+      request.predicate = tempPredicate
+    }
+    
     do {
       itemArr = try context.fetch(request)
     } catch {
@@ -100,7 +112,7 @@ extension ToDoTableViewController : UISearchBarDelegate {
     let request: NSFetchRequest<Item> = Item.fetchRequest()
     request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
     request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-    loadItems(with: request)
+    loadItems(with: request , predicate: request.predicate!)
   }
   func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
     loadItems()

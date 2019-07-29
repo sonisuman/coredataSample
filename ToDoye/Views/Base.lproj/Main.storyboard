@@ -112,7 +112,7 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <segue destination="e7X-4v-0in" kind="show" id="dLA-Lz-JSA"/>
+                        <segue destination="e7X-4v-0in" kind="show" identifier="addToItems" id="dLA-Lz-JSA"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZHv-nT-nVP" userLabel="First Responder" sceneMemberID="firstResponder"/>
